@@ -6,7 +6,9 @@ use \core\Controller;
 class ErrorController extends Controller {
 
     public function index() {
-        //$this->render('404');
+        $array = ['error'=>'Método de requisição inválido'];
+
+        $this->returnJson($array);
     }
 
 }
