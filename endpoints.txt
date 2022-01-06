@@ -1,0 +1,50 @@
+Itens relacionado ao usuario
+	Login
+		users/login 		 [POST]   - logar usuario
+		users/new   	     [POST]   - add usuario 
+		users/<id>  	     [GET]    - info usuario 
+		users/<id>   	     [PUT]    - editar usuario 
+		users/<id>           [DELETE] - excluir usuario
+		users/<id>/feed      [GET]    - feed de fotos do usuario 
+		users/<id>/photos    [GET]    - fotos do usuario
+		users/<id>/follow    [POST]   - seguir usuario
+		users/<id>/unfollow  [POST]   - deseguir usuario
+		
+		photos/random  		 [GET]    - fotos aleatórias
+		photos/<id> 		 [GET]    - informações sobre a foto 
+		photos/<id>  		 [DELETE] - excluir foto 
+		photos/<id>/comment  [POST]   - inserir novo comentarios na foto 
+		photos/<id>/comment  [DELETE] - deleta comentarios da foto 
+		photos/<id>/like     [POST]   - curtir a foto 
+		photos/<id>/like     [DELETE] - descurtir a foto
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

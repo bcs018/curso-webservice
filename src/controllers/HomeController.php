@@ -6,15 +6,16 @@ use \core\Controller;
 class HomeController extends Controller {
 
     public function index() {
-        $this->render('home', ['nome' => 'Bonieky']);
-    }
+        print_r($this->getRequestDada());
 
-    public function sobre() {
-        $this->render('sobre');
-    }
+        //echo "Metodo: ". $this->getMethod();
 
-    public function sobreP($args) {
-        print_r($args);
+        $array = [ 
+            'retornei' => 'Isso Fera',
+            'aceita'   => 'AIIIII'
+        ];
+
+        $this->returnJson($array);
     }
 
 }
