@@ -2,6 +2,8 @@
 namespace src\controllers;
 
 use \core\Controller;
+use src\models\Users;
+
 
 class UserController extends Controller {
 
@@ -19,7 +21,18 @@ class UserController extends Controller {
         $data = $this->getRequestDada();
 
         if($method == 'POST'){
+            if(empty($data['email']) && empty($data['pass'])){
+                $array['error'] = 'Email e/ou senha não preenchidos';
+            }else{
+                $users = new Users; 
 
+                if($users->checkCredentials($data['email'], $data['pass'])){
+                    // Gera o JWT
+                    $array['jwt'] = $users->createJwt();
+                }else{
+                    $array['error'] = 'Acesso negado';
+                }
+            }
         }else{
             $array['error'] = 'Método de reuisição inconpativel';
         }
