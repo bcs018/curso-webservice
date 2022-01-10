@@ -40,4 +40,35 @@ class UserController extends Controller {
         $this->returnJson($array);
     }
 
+    public function new_record(){
+        $array = ['error'=>''];
+
+        $method = $this->getMethod();
+        $data = $this->getRequestDada();
+
+        if($method == 'POST'){
+
+            if(!empty($data['name']) && !empty($data['pass']) && !empty($data['email'])){
+                if(filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
+                    $users = new Users;
+
+                    if($users->create($data['name'], $data['email'], $data['pass'])){
+                        $array['jwt'] = $users->createJwt();
+                    }else{
+                        $array['error'] = 'Email já existe na base de dados';
+                    }
+                }else{
+                    $array['error'] = 'Email invalido';
+                }
+            }else{
+                $array['error'] = 'Dados não preenchidos';
+            }
+
+        }else{
+            $array['error'] = 'Método de reuisição inconpativel';
+        }
+
+        $this->returnJson(($array));
+    }
+
 }
