@@ -2,6 +2,7 @@
 namespace src;
 
 define('JWT_SECRET_KEY', 'abC123!');
+define('BASE_URL', 'http://localhost/cursoPhp/webservice/api_devstragram/curso-webservice/');
 
 class Config {
     const BASE_DIR = '/mvc/public';

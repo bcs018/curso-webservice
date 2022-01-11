@@ -1,5 +1,5 @@
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{HTTP_HOST} ^localhost/cursoPhp/webservice/api_devstragram/curso-webservice$ [NC,OR] RewriteCond %{HTTP_HOST} ^localhost/cursoPhp/webservice/api_devstagram/curso-webservice$
+RewriteCond %{HTTP_HOST} ^localhost/cursoPhp/webservice/api_devstragram/curso-webservice$ [NC,OR] RewriteCond %{HTTP_HOST} ^localhost/cursoPhp/webservice/api_devstragram/curso-webservice$
 RewriteCond %{REQUEST_URI} !public/
 RewriteRule (.*) public/$1 [L]

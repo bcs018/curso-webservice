@@ -31,6 +31,24 @@ class Users extends Model {
         return $jwt->create(array('id_user'=>$this->id_user));
     }
 
+    public function validateJwt($token){
+        $jwt = new Jwt;
+        $info = $jwt->validate($token);
+
+        if(isset($info->id_user)){
+            $this->id_user = $info->id_user;
+
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public function getId(){
+        return $this->id_user;
+    }
+
     public function create($name, $email, $pass){
         if(!$this->emailExists($email)){
             $sql = "INSERT INTO users (name, email, pass) VALUES (:name, :email, :pass)";
@@ -46,6 +64,58 @@ class Users extends Model {
         }else{
             return false;
         }
+    }
+
+    public function getInfo($id){
+        $array = [];
+
+        $sql = 'SELECT * FROM users WHERE id = ?';
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(1, $id['id']);
+        $sql->execute();
+
+        if($sql->rowCount() > 0){
+            // o PDO::FETCH_ASSOC faz a associação basica do atributos vindo do banco
+            // exemplo: ele não retornara um array com as posições 0,1,2... será somente
+            // o no nome dos campos que estão no sql
+            $array = $sql->fetch(\PDO::FETCH_ASSOC);
+
+            $photos = new Photos;
+
+            if(!empty($array['avatar'])){
+                $array['avatar'] = BASE_URL.'media/avatar/'.$array['avatar'];
+            }else{
+                $array['avatar'] = BASE_URL.'media/avatar/default.jpg';
+            }
+
+            $array['following'] = $this->getFollowingCount($id);
+            $array['followers'] = $this->getFollowersCount($id);
+            $aaray['photos_count'] = $photos->getPhotosCount($id);
+        }
+
+        return $array;
+    }
+
+    public function getFollowingCount($id){
+        $sql = "SELECT COUNT(*) AS C FROM users_following WHERE id_user_active = ?";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(1, $id);
+        $sql->execute();
+
+        $info = $sql->fetch();
+
+        return $info['C'];
+    }
+
+    public function getFollowersCount($id){
+        $sql = "SELECT COUNT(*) AS C FROM users_following WHERE id_user_passive = ?";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(1, $id);
+        $sql->execute();
+
+        $info = $sql->fetch();
+
+        return $info['C'];
     }
 
     private function emailExists($email){
