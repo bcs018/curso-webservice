@@ -118,7 +118,7 @@ class Users extends Model {
         return $info['C'];
     }
 
-    private function emailExists($email){
+    public function emailExists($email){
         $sql = "SELECT * FROM users WHERE email = :email";
         $sql = $this->db->prepare($sql);
         $sql->bindValue(":email", $email);

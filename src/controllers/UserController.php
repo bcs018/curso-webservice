@@ -72,9 +72,8 @@ class UserController extends Controller {
     }
 
     public function view($id){
-        $array = ['error'=>"", 'logged'=>false];
+        $array = ['error'=>'', 'logged'=>false];
 
-        $method = $this->getMethod();
         $data = $this->getRequestDada();
 
         $users = new Users;
@@ -90,31 +89,47 @@ class UserController extends Controller {
                 $array['is_me'] = true;
             }
 
-            switch($method){
-                case 'GET':
-                    $array['data'] = $users->getInfo($id);
+            $array['data'] = $users->getInfo($id);
 
-                    if(count($array['data']) === 0){
-                        $array['error'] = "Usuario não existe";
-                    }
-                    break;
-
-                case 'PUT':
-                    break;
-
-                case 'DELETE':
-                    break;
-
-                default:
-                    $array['error'] = 'Método '.$method.' não disponivel';
-                    break;
+            if(count($array['data']) === 0){
+                $array['error'] = "Usuario não existe";
             }
+
         }else{
             $array['error'] = 'Acesso negado';
         }
 
         $this->returnJson(($array));
+    }
 
+    public function edit($id, $data){
+        $array = ['error'=>'', 'logged'=>false];
+
+        $data = $this->getRequestDada();
+        $users = new Users;
+
+        if(!empty($data['jwt']) && $users->validateJwt($data)){
+            $array['logged'] = true;
+            $tochange = [];
+
+            if($id === $users->getId()){
+                if(!empty($data['name'])){
+                    $tochange['name'] = $data['name'];
+                }
+                if(!empty($data['email'] && filter_var($data['email'], 'FILTER_VALIDATE_EMAIL') && !$users->emailExists($data['email']))){
+                    $tochange['email'] = $data['email'];
+                }
+                if(!empty($data['pass'])){
+                    $tochange['pass'] = $data['pass'];
+                }
+
+                if(count($tochange) > 0){
+                    //fazer o update
+                }
+            }else{
+                $array['error'] = 'Sem permissão para editar esse usuário';
+            }
+        }
     }
 
 }
