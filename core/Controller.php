@@ -13,7 +13,7 @@ class Controller {
     }
 
     // Pega os dados do metodo no mesmo padrão
-    public function getRequestDada(){
+    public function getRequestData(){
         switch ($this->getMethod()) {
             case 'GET':
                 return $_GET;

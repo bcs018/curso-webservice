@@ -18,7 +18,7 @@ class UserController extends Controller {
         // Pega o metodo da requisição
         $method = $this->getMethod();
         // Dados que que o usu enviou
-        $data = $this->getRequestDada();
+        $data = $this->getRequestData();
 
         if($method == 'POST'){
             if(empty($data['email']) && empty($data['pass'])){
@@ -44,7 +44,7 @@ class UserController extends Controller {
         $array = ['error'=>''];
 
         $method = $this->getMethod();
-        $data = $this->getRequestDada();
+        $data = $this->getRequestData();
 
         if($method == 'POST'){
 
@@ -74,7 +74,7 @@ class UserController extends Controller {
     public function view($id){
         $array = ['error'=>'', 'logged'=>false];
 
-        $data = $this->getRequestDada();
+        $data = $this->getRequestData();
 
         $users = new Users;
 
@@ -102,34 +102,47 @@ class UserController extends Controller {
         $this->returnJson(($array));
     }
 
-    public function edit($id, $data){
+    public function edit($id){
         $array = ['error'=>'', 'logged'=>false];
 
-        $data = $this->getRequestDada();
+        $data = $this->getRequestData();
         $users = new Users;
 
-        if(!empty($data['jwt']) && $users->validateJwt($data)){
+        if(!empty($data['jwt']) && $users->validateJwt($data['jwt'])){
             $array['logged'] = true;
             $tochange = [];
 
-            if($id === $users->getId()){
-                if(!empty($data['name'])){
-                    $tochange['name'] = $data['name'];
+            if($id['id'] == $users->getId()){
+                if(isset($data['name'])){
+                    if(!empty($data['name'])){
+                        $tochange['name'] = $data['name'];
+                    }
                 }
-                if(!empty($data['email'] && filter_var($data['email'], 'FILTER_VALIDATE_EMAIL') && !$users->emailExists($data['email']))){
-                    $tochange['email'] = $data['email'];
+                if(isset($data['email'])){
+                    if(!empty($data['email'] && filter_var($data['email'], 'FILTER_VALIDATE_EMAIL') && !$users->emailExists($data['email']))){
+                        $tochange['email'] = $data['email'];
+                    }
                 }
-                if(!empty($data['pass'])){
-                    $tochange['pass'] = $data['pass'];
+                if(isset($data['pass'])){
+                    if(!empty($data['pass'])){
+                        $tochange['pass'] = $data['pass'];
+                    }
                 }
 
                 if(count($tochange) > 0){
                     //fazer o update
+
+                    //$dados['data'] = $users->edit($id, $tochange['name'], $tochange['pass'], $tochange['email']);
+                    $array['data'] = $users->getInfo($id);
+                    $this->returnJson($array);
                 }
             }else{
                 $array['error'] = 'Sem permissão para editar esse usuário';
             }
+        }else{
+            $array['error'] = 'Area restrita, faça login para continuar';
         }
+        $this->returnJson($array);
     }
 
 }

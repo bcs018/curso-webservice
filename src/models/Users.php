@@ -88,9 +88,9 @@ class Users extends Model {
                 $array['avatar'] = BASE_URL.'media/avatar/default.jpg';
             }
 
-            $array['following'] = $this->getFollowingCount($id);
-            $array['followers'] = $this->getFollowersCount($id);
-            $aaray['photos_count'] = $photos->getPhotosCount($id);
+            $array['following'] = $this->getFollowingCount($id['id']);
+            $array['followers'] = $this->getFollowersCount($id['id']);
+            $aaray['photos_count'] = $photos->getPhotosCount($id['id']);
         }
 
         return $array;
@@ -129,5 +129,11 @@ class Users extends Model {
         }
         
         return false;
+    }
+
+    public function edit($id, $name='', $pass='', $email=''){
+        
+        
+        return $this->getInfo($id);
     }
 }
