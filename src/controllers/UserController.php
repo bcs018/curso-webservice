@@ -111,6 +111,9 @@ class UserController extends Controller {
         if(!empty($data['jwt']) && $users->validateJwt($data['jwt'])){
             $array['logged'] = true;
             $tochange = [];
+            $tochange['name']  = '';
+            $tochange['email'] = '';
+            $tochange['pass']  = '';
 
             if($id['id'] == $users->getId()){
                 if(isset($data['name'])){
@@ -119,8 +122,12 @@ class UserController extends Controller {
                     }
                 }
                 if(isset($data['email'])){
-                    if(!empty($data['email'] && filter_var($data['email'], 'FILTER_VALIDATE_EMAIL') && !$users->emailExists($data['email']))){
+                    if(!empty($data['email'] && filter_var($data['email'], FILTER_VALIDATE_EMAIL) && !$users->emailExists($data['email']))){
                         $tochange['email'] = $data['email'];
+                    }else{
+                        $array['error'] = 'E-mail inválido ou já existente';
+                        $this->returnJson($array);
+                        exit;
                     }
                 }
                 if(isset($data['pass'])){
@@ -131,10 +138,10 @@ class UserController extends Controller {
 
                 if(count($tochange) > 0){
                     //fazer o update
-
-                    //$dados['data'] = $users->edit($id, $tochange['name'], $tochange['pass'], $tochange['email']);
-                    $array['data'] = $users->getInfo($id);
-                    $this->returnJson($array);
+                    if($users->edit($id, $tochange['name'], $tochange['pass'], $tochange['email']))
+                        $array['error'] = 'Usuário alterado com sucesso!';
+                    else
+                        $array['error'] = 'Erro interno ao alterar dados';
                 }
             }else{
                 $array['error'] = 'Sem permissão para editar esse usuário';

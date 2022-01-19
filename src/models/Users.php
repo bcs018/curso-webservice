@@ -53,9 +53,9 @@ class Users extends Model {
         if(!$this->emailExists($email)){
             $sql = "INSERT INTO users (name, email, pass) VALUES (:name, :email, :pass)";
             $sql = $this->db->prepare($sql);
-            $sql->bindValue(":name", $name);
-            $sql->bindValue(":email", $email);
-            $sql->bindValue(":pass", md5($pass));
+            $sql->bindValue(":name" , $name      );
+            $sql->bindValue(":email", $email     );
+            $sql->bindValue(":pass" , md5($pass) );
             $sql->execute();
 
             $this->id_user = $this->db->lastInsertId();
@@ -132,8 +132,18 @@ class Users extends Model {
     }
 
     public function edit($id, $name='', $pass='', $email=''){
+        $data = $this->getInfo($id);
+
+        $sql = "UPDATE users SET name = :name, email = :email, pass = :pass WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(':name' , ($name  == '') ? $data['name']  : $name      );
+        $sql->bindValue(':email', ($email == '') ? $data['email'] : $email     );
+        $sql->bindValue(':pass' , ($pass  == '') ? $data['pass']  : md5($name) );
+        $sql->bindValue(':id'   ,  $id['id']                                   );
         
-        
-        return $this->getInfo($id);
+        if($sql->execute())
+            return true;
+
+        return false;
     }
 }
