@@ -15,4 +15,21 @@ class Photos extends Model {
     
         return $info['C'];
     }
+
+    public function delete($id){
+        $sql = "DELETE FROM photos_comments WHERE id_user = :id";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+
+        $sql = "DELETE FROM photos_likes WHERE id_user = :id";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+
+        $sql = "DELETE FROM photos WHERE id_user = :id";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+    }
 }

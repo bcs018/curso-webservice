@@ -146,4 +146,17 @@ class Users extends Model {
 
         return false;
     }
+
+    public function delete($id){
+        $sql = "DELETE FROM users_following WHERE id_user_active = :id_act OR id_user_passive = :id_pass";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(':id_act' , $id);
+        $sql->bindValue(':id_pass', $id);
+        $sql->execute();
+
+        $sql = "DELETE FROM users WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+    }
 }

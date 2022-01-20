@@ -2,6 +2,7 @@
 namespace src\controllers;
 
 use \core\Controller;
+use src\models\Photos;
 use src\models\Users;
 
 
@@ -149,6 +150,33 @@ class UserController extends Controller {
         }else{
             $array['error'] = 'Area restrita, faça login para continuar';
         }
+        $this->returnJson($array);
+    }
+
+    public function del($id){
+        $array = ['error'=>'', 'logged'=>false];
+
+        $data = $this->getRequestData();
+        $users = new Users;
+
+        if(!empty($data['jwt']) && $users->validateJwt($data['jwt'])){
+            if($users->getId() == $id['id']){
+
+                $photos = new Photos;
+                $photos->delete($id['id']);
+    
+                $users->delete($id['id']);
+               
+                $array['error'] = 'Usuário deletado com sucesso';
+    
+            }else{
+                $array['error'] = 'Sem permissão para deletar esse usuário';
+            }
+        }else{
+            $array['error'] = 'Area restrita, faça login para continuar';
+        }
+        
+
         $this->returnJson($array);
     }
 
