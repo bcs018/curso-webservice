@@ -3,6 +3,7 @@ namespace src\models;
 use \core\Model;
 
 use src\models\Jwt;
+use src\models\Photos;
 
 class Users extends Model {
     // Id do usuario para poder usar no futuro
@@ -158,5 +159,40 @@ class Users extends Model {
         $sql = $this->db->prepare($sql);
         $sql->bindValue(':id', $id);
         $sql->execute();
+    }
+
+    public function getFeed($offset=0, $per_page=10){
+        /**
+         * 1 - Pegar os seguidores
+         */
+        $followingUsers = $this->getFollowing($this->getId);
+
+        /**
+         * 2 - Fazer uma lista das ultimas fts desses seguidores
+         */
+        $p = new Photos();
+
+        return $p->getFeedCollection($followingUsers, $offset, $per_page);
+
+    }
+
+    public function getFollowing($id_user){
+        $array = [];
+
+        // Preencher os ids dos usuarios que eu sigo
+        $sql = 'SELECT id_user_passive FROM users_following WHERE id_user_active = ?';
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(1, $this->id_user);
+        $sql->execute();
+
+        if($sql->rowCount() > 0){
+            $data = $sql->fetchAll();
+
+            foreach($data as $item){
+                $array[] = intval($item['id_user_passive']);
+            }
+        }
+
+        return $array;
     }
 }

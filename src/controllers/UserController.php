@@ -180,4 +180,39 @@ class UserController extends Controller {
         $this->returnJson($array);
     }
 
+    public function feed(){
+        $array = ['error'=>'', 'logged'=>false];
+
+        $data = $this->getRequestData();
+
+        $users = new Users;
+
+        // Valida o jwt e verfica se não está preenchido
+        if(!empty($data['jwt']) && $users->validateJwt($data['jwt'])){
+            $array['logged'] = true;
+
+            // a partir de qual item começa a mostrar 
+            $offset = 0;
+            if(!empty($data['offset'])){
+                $offset = intval($data['offset']);
+            }
+
+            //qtd itens por pagina
+            $per_page = 10;
+            if(!empty($data['per_page'])){
+                $per_page = intval($data['per_page']);
+            }
+
+            $array['data'] = $users->getFeed($offset, $per_page);
+
+
+
+        }else{
+            $array['error'] = 'Acesso negado';
+        }
+
+        $this->returnJson(($array));
+
+    }
+
 }

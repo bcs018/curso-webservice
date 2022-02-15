@@ -32,4 +32,8 @@ class Photos extends Model {
         $sql->bindValue(':id', $id);
         $sql->execute();
     }
+
+    public function getFeedCollection($followingUsers, $offset, $per_page){
+
+    }
 }

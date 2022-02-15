@@ -8,7 +8,7 @@ $router->post('/users/new', 'UserController@new_record');
 $router->get('/users/{id}', 'UserController@view');
 $router->put('/users/{id}', 'UserController@edit');
 $router->delete('/users/{id}', 'UserController@del');
-$router->get('/users/{id}/feed', 'UserController@feed');
+$router->get('/users/feed', 'UserController@feed');
 $router->get('/users/{id}/photos', 'UserController@photos');
 $router->post('/users/{id}/follow', 'UserController@follow');
 $router->delete('/users/{id}/follow', 'UserController@unfollow');
