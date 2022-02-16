@@ -33,7 +33,32 @@ class Photos extends Model {
         $sql->execute();
     }
 
-    public function getFeedCollection($followingUsers, $offset, $per_page){
+    public function getFeedCollection($ids, $offset, $per_page){
+        $array = [];
+        $users = new Users;
 
+        if(count($ids) > 0){
+            $sql = 'SELECT * FROM photos WHERE is_user IN ('.implode(',',$ids).') ORDER BY id DESC LIMIT ?, ?';
+            $sql = $this->db->prepare($sql);
+            $sql->bindValue(1,);
+            $sql->bindValue(2, $offset);
+            $sql->bindValue(3, $per_page);
+            $sql->execute();
+
+            if($sql->rowCount() > 0){
+                $array = $sql->fetchAll(\PDO::FETCH_ASSOC);
+
+                foreach($array as $k => $item){
+                    $user_info = $users->getInfo(($item['id_user']));
+                    
+                    $array[$k]['name'] = $user_info['name'];
+                    $array[$k]['avatar'] = $user_info['avatar'];
+                    
+                    $array[$k] = BASE_URL.'media/photos/'.$item['url'];
+                }
+            }
+        }
+
+        return $array;
     }
 }
